@@ -87,7 +87,7 @@ Open [http://localhost:3000](http://localhost:3000) in your browser to explore t
 
 ## 👥 Team & Task Distribution
 
-| **MEMBER 1**<br>*(Lead Systems & Functional Build)* | **MEMBER 2 (YOU)**<br>*(UI/UX Design & High-Fi Assets)* | **MEMBER 3**<br>*(Pitch Lead, Deck & Storytelling)* |
+| **Kyzer Phneh**<br>*(Lead Systems & Functional Build)* | **Lau Jun Hao**<br>*(UI/UX Design & High-Fi Assets)* | **Yap Han Lim**<br>*(Pitch Lead, Deck & Storytelling)* |
 | :--- | :--- | :--- |
 | • Next.js + Tailwind environment setup<br>• State machine & simulation logic<br>• Interactive chart & dynamic demo curves<br>• Live demo stability & production deployment | • High-fidelity UI layout & aesthetics via AI tools<br>• Township hydraulic topology vector graphic<br>• Static mockups of "future" vision & states<br>• Frontend styling & Tailwind component system | • 10-slide hackathon pitch deck formulation<br>• Financial ROI & ESG impact model (RM & $m^3$)<br>• 5-minute pitch script & judge Q&A preparation<br>• Live demo narration & driver during presentation |
 
