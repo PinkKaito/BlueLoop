@@ -34,14 +34,19 @@ export const SidebarRail: React.FC<SidebarRailProps> = ({
     <aside className="w-16 hidden lg:flex flex-col items-center justify-between py-4 bg-[#0D1424] border-r border-slate-800/80 z-20 select-none">
       {/* Top Brand Logo */}
       <div className="flex flex-col items-center gap-3">
-        <div className="relative group cursor-pointer" title="BlueLoop — Smart Township Water Intelligence">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-cyan-900/60 to-blue-950/80 border border-cyan-500/40 flex items-center justify-center shadow-[0_0_15px_rgba(14,165,233,0.35)] group-hover:border-cyan-400 transition-all">
+        <button
+          onClick={() => setActiveTab('overview')}
+          className="relative group cursor-pointer focus:outline-none"
+          title="BlueLoop — Return to Overview"
+          aria-label="Return to Hydraulic Overview"
+        >
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-cyan-900/60 to-blue-950/80 border border-cyan-500/40 flex items-center justify-center shadow-[0_0_15px_rgba(14,165,233,0.35)] group-hover:border-cyan-400 group-hover:scale-105 transition-all">
             <Droplets className="w-5 h-5 text-cyan-400 group-hover:scale-110 transition-transform" />
           </div>
           <span className="absolute left-14 top-2 px-2.5 py-1 bg-slate-900 text-cyan-300 text-xs font-semibold rounded-md border border-slate-700 shadow-xl opacity-0 pointer-events-none group-hover:opacity-100 transition-opacity whitespace-nowrap z-50">
-            BlueLoop OS v2.4
+            BlueLoop OS (Return to Overview)
           </span>
-        </div>
+        </button>
 
         <div className="w-8 h-[1px] bg-slate-800 my-1" />
 
