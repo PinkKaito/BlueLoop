@@ -10,6 +10,10 @@ import { StormForecastChart } from '@/components/StormForecastChart';
 import { ActionApprovalCard } from '@/components/ActionApprovalCard';
 import { ExecutiveKpiBar } from '@/components/ExecutiveKpiBar';
 import { DemoWalkthroughModal } from '@/components/DemoWalkthroughModal';
+import { TopologyView } from '@/components/views/TopologyView';
+import { ForecastView } from '@/components/views/ForecastView';
+import { ControlsView } from '@/components/views/ControlsView';
+import { EsgLedgerView } from '@/components/views/EsgLedgerView';
 import {
   SimulationPhase,
   StormScenario,
@@ -52,7 +56,7 @@ export default function BlueLoopDashboard() {
   const [demoStep, setDemoStep] = useState<number>(0);
   const [isAutoDemoRunning, setIsAutoDemoRunning] = useState<boolean>(false);
 
-  // Sub-telemetry jitter
+  // Telemetry jitter
   useEffect(() => {
     const interval = setInterval(() => {
       setLatencyMs(Math.floor(12 + Math.random() * 5));
@@ -76,7 +80,6 @@ export default function BlueLoopDashboard() {
     const mm = SCENARIO_PRESETS[scenario].mm;
     setRainfallMm(mm);
 
-    // If extreme storm and already drawdown, auto-open secondary canal release
     if (mm >= 105 && isDrawdownExecuted) {
       setCanalReleaseOpen(true);
       setActiveTier('tier2_canal');
@@ -108,13 +111,11 @@ export default function BlueLoopDashboard() {
     setIsSimulating(true);
     setCurrentPhase('ACT');
 
-    // Intermediate state: Pumps ramp up
     setTelemetry(prev => ({
       ...prev,
       pumpFlowRate: 380,
     }));
 
-    // Transition to post-drawdown safe state
     setTimeout(() => {
       setIsSimulating(false);
       setIsDrawdownExecuted(true);
@@ -159,7 +160,7 @@ export default function BlueLoopDashboard() {
         latencyMs={latencyMs}
       />
 
-      {/* 2. Main Executive Screen Container (16:9 Single-Screen Bento Grid) */}
+      {/* 2. Main Executive Screen Container */}
       <main className="flex-1 flex flex-col justify-between p-2.5 sm:p-3.5 gap-2.5 max-w-[1720px] mx-auto w-full overflow-y-auto 2xl:overflow-hidden h-full">
         {/* A. TOP EXECUTIVE HEADER BAR */}
         <HeaderBar
@@ -171,77 +172,126 @@ export default function BlueLoopDashboard() {
           onSelectTownship={setSelectedTownship}
         />
 
-        {/* B. MAIN TWO-COLUMN DASHBOARD BENTO GRID */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-2.5 flex-1 min-h-0">
-          {/* ====== LEFT COLUMN (5 cols): HYDRAULIC TOPOLOGY & SENSOR TELEMETRY ====== */}
-          <div className="lg:col-span-5 grid grid-cols-1 md:grid-cols-12 gap-2.5 min-h-0">
-            {/* Left Sub-Section (7 cols in subgrid): Vector Schematic Topology */}
-            <div className="md:col-span-7 h-full">
-              <HydraulicSchematic
-                telemetry={telemetry}
-                isDrawdownActive={isSimulating || isDrawdownExecuted}
-                canalReleaseOpen={canalReleaseOpen}
-                onToggleCanalRelease={() => setCanalReleaseOpen(prev => !prev)}
-              />
+        {/* B. DYNAMIC ACTIVE VIEW */}
+        {activeTab === 'overview' && (
+          <>
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-2.5 flex-1 min-h-0">
+              {/* Left Column (5 cols): Topology + Gauges */}
+              <div className="lg:col-span-5 grid grid-cols-1 md:grid-cols-12 gap-2.5 min-h-0">
+                <div className="md:col-span-7 h-full">
+                  <HydraulicSchematic
+                    telemetry={telemetry}
+                    isDrawdownActive={isSimulating || isDrawdownExecuted}
+                    canalReleaseOpen={canalReleaseOpen}
+                    onToggleCanalRelease={() => setCanalReleaseOpen(prev => !prev)}
+                  />
+                </div>
+
+                <div className="md:col-span-5 h-full">
+                  <SensorGauges
+                    telemetry={telemetry}
+                    isDrawdownExecuted={isDrawdownExecuted}
+                  />
+                </div>
+              </div>
+
+              {/* Right Column (7 cols): Prediction + Recharts + Approval */}
+              <div className="lg:col-span-7 flex flex-col justify-between gap-2.5 min-h-0">
+                <div>
+                  <PreStormAlertBanner
+                    rainfallMm={rainfallMm}
+                    onRainfallChange={handleRainfallChange}
+                    selectedScenario={selectedScenario}
+                    onSelectScenario={handleSelectScenario}
+                    isDrawdownExecuted={isDrawdownExecuted}
+                    unmanagedPeak={unmanagedPeak}
+                    managedPeak={managedPeak}
+                  />
+                </div>
+
+                <div className="flex-1 min-h-[190px]">
+                  <StormForecastChart
+                    data={forecastChartData}
+                    unmanagedPeak={unmanagedPeak}
+                    managedPeak={managedPeak}
+                    isDrawdownExecuted={isDrawdownExecuted}
+                  />
+                </div>
+
+                <div>
+                  <ActionApprovalCard
+                    isDrawdownExecuted={isDrawdownExecuted}
+                    isSimulating={isSimulating}
+                    onApproveDrawdown={triggerProactiveDrawdown}
+                    onReset={handleReset}
+                    supervisedAutonomy={supervisedAutonomy}
+                    onToggleAutonomy={() => setSupervisedAutonomy(prev => !prev)}
+                    activeTier={activeTier}
+                    onSelectTier={setActiveTier}
+                  />
+                </div>
+              </div>
             </div>
 
-            {/* Right Sub-Section (5 cols in subgrid): 3 Stacked Sensor Gauges */}
-            <div className="md:col-span-5 h-full">
-              <SensorGauges
-                telemetry={telemetry}
+            {/* Bottom KPI Bar */}
+            <div className="shrink-0">
+              <ExecutiveKpiBar
+                metrics={metrics}
                 isDrawdownExecuted={isDrawdownExecuted}
               />
             </div>
-          </div>
+          </>
+        )}
 
-          {/* ====== RIGHT COLUMN (7 cols): PREDICTION, RECHARTS SIMULATION & ACTIONS ====== */}
-          <div className="lg:col-span-7 flex flex-col justify-between gap-2.5 min-h-0">
-            {/* 1. Pre-Storm Action Alert Banner */}
-            <div>
-              <PreStormAlertBanner
-                rainfallMm={rainfallMm}
-                onRainfallChange={handleRainfallChange}
-                selectedScenario={selectedScenario}
-                onSelectScenario={handleSelectScenario}
-                isDrawdownExecuted={isDrawdownExecuted}
-                unmanagedPeak={unmanagedPeak}
-                managedPeak={managedPeak}
-              />
-            </div>
+        {/* C. TOPOLOGY & DIGITAL TWIN VIEW */}
+        {activeTab === 'topology' && (
+          <TopologyView
+            telemetry={telemetry}
+            isDrawdownActive={isSimulating || isDrawdownExecuted}
+            canalReleaseOpen={canalReleaseOpen}
+            onToggleCanalRelease={() => setCanalReleaseOpen(prev => !prev)}
+            onBackToOverview={() => setActiveTab('overview')}
+          />
+        )}
 
-            {/* 2. Center Hero Card: Recharts Hydrograph Simulation */}
-            <div className="flex-1 min-h-[190px]">
-              <StormForecastChart
-                data={forecastChartData}
-                unmanagedPeak={unmanagedPeak}
-                managedPeak={managedPeak}
-                isDrawdownExecuted={isDrawdownExecuted}
-              />
-            </div>
+        {/* D. METEOROLOGICAL RADAR & HYDROLOGY VIEW */}
+        {activeTab === 'forecast' && (
+          <ForecastView
+            rainfallMm={rainfallMm}
+            onRainfallChange={handleRainfallChange}
+            selectedScenario={selectedScenario}
+            onSelectScenario={handleSelectScenario}
+            isDrawdownExecuted={isDrawdownExecuted}
+            unmanagedPeak={unmanagedPeak}
+            managedPeak={managedPeak}
+            chartData={forecastChartData}
+            onBackToOverview={() => setActiveTab('overview')}
+          />
+        )}
 
-            {/* 3. Bottom Control: Smart Action Approval & Autonomy Toggle */}
-            <div>
-              <ActionApprovalCard
-                isDrawdownExecuted={isDrawdownExecuted}
-                isSimulating={isSimulating}
-                onApproveDrawdown={triggerProactiveDrawdown}
-                onReset={handleReset}
-                supervisedAutonomy={supervisedAutonomy}
-                onToggleAutonomy={() => setSupervisedAutonomy(prev => !prev)}
-                activeTier={activeTier}
-                onSelectTier={setActiveTier}
-              />
-            </div>
-          </div>
-        </div>
+        {/* E. SUPERVISED AUTONOMY & SCADA ACTUATOR VIEW */}
+        {activeTab === 'controls' && (
+          <ControlsView
+            isDrawdownExecuted={isDrawdownExecuted}
+            isSimulating={isSimulating}
+            onApproveDrawdown={triggerProactiveDrawdown}
+            onReset={handleReset}
+            supervisedAutonomy={supervisedAutonomy}
+            onToggleAutonomy={() => setSupervisedAutonomy(prev => !prev)}
+            activeTier={activeTier}
+            onSelectTier={setActiveTier}
+            onBackToOverview={() => setActiveTab('overview')}
+          />
+        )}
 
-        {/* C. BOTTOM EXECUTIVE KPI BAR (3 EQUAL BENTO CARDS) */}
-        <div className="shrink-0">
-          <ExecutiveKpiBar
+        {/* F. ESG LEDGER & WATER ECONOMICS VIEW */}
+        {activeTab === 'esg' && (
+          <EsgLedgerView
             metrics={metrics}
             isDrawdownExecuted={isDrawdownExecuted}
+            onBackToOverview={() => setActiveTab('overview')}
           />
-        </div>
+        )}
       </main>
 
       {/* Interactive Hackathon Pitch / Demo Walkthrough Modal */}
