@@ -82,3 +82,12 @@ Open [http://localhost:3000](http://localhost:3000) in your browser to explore t
 2. **Phase 2 (Pre-Storm Alert):** Select between `45mm Moderate`, `85mm Heavy [Default]`, or `120mm Extreme Surge` using the interactive scenario pills or intensity slider. Notice the red curve spiking over the $100\%$ danger threshold to $105\%$.
 3. **Phase 3 (Approve Drawdown):** Click the glowing emerald **`APPROVE DRAWDOWN`** button. Watch the SVG pipelines animate water transfer, the gauges drop the pond to $55\%$ while filling the tank to $75\%$ and irrigating turf to $62\%$.
 4. **Phase 4 (Outcome Verification):** The hydrograph updates to show peak surge capped at $82\%$, flood risk mitigated by $23\%$, $+1,150\text{ m}^3$ buffer created, and $\text{RM } 16,970$ saved.
+
+---
+
+## 👥 Team & Task Distribution
+
+| **MEMBER 1**<br>*(Lead Systems & Functional Build)* | **MEMBER 2 (YOU)**<br>*(UI/UX Design & High-Fi Assets)* | **MEMBER 3**<br>*(Pitch Lead, Deck & Storytelling)* |
+| :--- | :--- | :--- |
+| • Next.js + Tailwind environment setup<br>• State machine & simulation logic<br>• Interactive chart & dynamic demo curves<br>• Live demo stability & production deployment | • High-fidelity UI layout & aesthetics via AI tools<br>• Township hydraulic topology vector graphic<br>• Static mockups of "future" vision & states<br>• Frontend styling & Tailwind component system | • 10-slide hackathon pitch deck formulation<br>• Financial ROI & ESG impact model (RM & $m^3$)<br>• 5-minute pitch script & judge Q&A preparation<br>• Live demo narration & driver during presentation |
+
