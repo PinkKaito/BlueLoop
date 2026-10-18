@@ -1,0 +1,157 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --canvas-bg: #0B0F19;
+  --card-surface: #131B2E;
+  --card-border: rgba(51, 65, 85, 0.7);
+  --cyan-accent: #0EA5E9;
+  --emerald-accent: #10B981;
+  --amber-accent: #F59E0B;
+  --rose-accent: #F43F5E;
+}
+
+body {
+  background-color: var(--canvas-bg);
+  color: #F8FAFC;
+  font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  background-image: 
+    radial-gradient(circle at 15% 15%, rgba(14, 165, 233, 0.08) 0%, transparent 40%),
+    radial-gradient(circle at 85% 20%, rgba(244, 63, 94, 0.06) 0%, transparent 40%),
+    radial-gradient(circle at 50% 85%, rgba(16, 185, 129, 0.05) 0%, transparent 45%);
+  background-attachment: fixed;
+}
+
+/* Custom Executive Card */
+.exec-card {
+  background: linear-gradient(180deg, rgba(19, 27, 46, 0.95) 0%, rgba(13, 20, 36, 0.98) 100%);
+  border: 1px solid rgba(51, 65, 85, 0.75);
+  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.6), inset 0 1px 0 0 rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(12px);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.exec-card:hover {
+  border-color: rgba(56, 189, 248, 0.35);
+}
+
+/* Top Accent Bars */
+.accent-top-cyan {
+  border-top: 3px solid #0EA5E9;
+}
+.accent-top-emerald {
+  border-top: 3px solid #10B981;
+}
+.accent-top-amber {
+  border-top: 3px solid #F59E0B;
+}
+.accent-top-rose {
+  border-top: 3px solid #F43F5E;
+}
+
+/* Alert Banner Styles */
+.alert-banner-high {
+  background: linear-gradient(90deg, rgba(127, 29, 29, 0.7) 0%, rgba(180, 83, 9, 0.55) 60%, rgba(67, 20, 7, 0.75) 100%);
+  border: 1px solid rgba(249, 115, 22, 0.65);
+  box-shadow: 0 0 25px -5px rgba(239, 68, 68, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.12);
+}
+
+.alert-banner-mitigated {
+  background: linear-gradient(90deg, rgba(6, 78, 59, 0.7) 0%, rgba(15, 118, 110, 0.55) 60%, rgba(17, 24, 39, 0.85) 100%);
+  border: 1px solid rgba(16, 185, 129, 0.65);
+  box-shadow: 0 0 25px -5px rgba(16, 185, 129, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.12);
+}
+
+/* Animated SVG Pipe Flows */
+.pipe-flow {
+  stroke-dasharray: 8 8;
+  animation: flowDash 1.2s linear infinite;
+  animation-play-state: paused;
+  opacity: 0.25;
+  transition: opacity 0.4s ease, stroke-width 0.4s ease;
+}
+
+.pipe-flow.active {
+  animation-play-state: running;
+  opacity: 1;
+  filter: drop-shadow(0 0 6px currentColor);
+}
+
+.pipe-flow.fast {
+  animation-duration: 0.45s;
+}
+
+@keyframes flowDash {
+  to {
+    stroke-dashoffset: -32;
+  }
+}
+
+/* Water Wave transitions */
+.water-wave {
+  transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Radial Gauge Progress Transition */
+.gauge-ring {
+  transition: stroke-dashoffset 0.85s cubic-bezier(0.22, 1, 0.36, 1), stroke 0.5s ease;
+  transform: rotate(-90deg);
+  transform-origin: 50% 50%;
+}
+
+/* Glow Utility Classes */
+.glow-cyan {
+  filter: drop-shadow(0 0 8px rgba(14, 165, 233, 0.55));
+}
+.glow-emerald {
+  filter: drop-shadow(0 0 8px rgba(16, 185, 129, 0.6));
+}
+.glow-amber {
+  filter: drop-shadow(0 0 8px rgba(245, 158, 11, 0.5));
+}
+.glow-rose {
+  filter: drop-shadow(0 0 8px rgba(244, 63, 94, 0.6));
+}
+
+/* Custom Range Slider */
+input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  background: rgba(15, 23, 42, 0.8);
+  height: 6px;
+  border-radius: 999px;
+  border: 1px solid rgba(148, 163, 184, 0.25);
+  outline: none;
+}
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #f97316;
+  cursor: pointer;
+  box-shadow: 0 0 10px rgba(249, 115, 22, 0.9);
+  border: 2px solid #fff;
+  transition: transform 0.15s ease;
+}
+input[type="range"]::-webkit-slider-thumb:hover {
+  transform: scale(1.15);
+}
+
+/* Custom Scrollbar for inner viewports */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: rgba(15, 23, 42, 0.5);
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(51, 65, 85, 0.8);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(71, 85, 105, 1);
+}
