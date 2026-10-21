@@ -1,93 +1,108 @@
-# BlueLoop — Smart Township Water Intelligence
-**Sime Darby Property University Hackathon (Track: PLANET)**  
-*Deployment Targets: City of Elmina (Central Wetland Retention • PLC-01) & Bandar Bukit Raja (125-Acre Flood-Mitigation Town Park • PLC-02)*
+# BlueLoop · Township Water Intelligence
 
----
+A working demonstration of the supplied five-condition BlueLoop prototype, built with Next.js, React, TypeScript, and Recharts. The light dashboard models township stormwater storage, internal reuse, staged canal release, safety holds, and measured outcomes.
 
-## 🌊 Overview
-**BlueLoop** is an autonomous, predictive township water intelligence platform that resolves the fundamental operational paradox of master-planned tropical townships:
-1. **Severe Flash Floods:** Tropical convective storms overwhelm retention ponds and civil canals during heavy downpours ($> 85\text{ mm}$).
-2. **Potable Water Waste:** During dry periods, municipal treated water is purchased at commercial utility rates (Air Selangor) to irrigate township parks, landscape turf, and recreational grounds.
-3. **Passive Hydraulic Inefficiencies:** Traditional civil sluice gates and ponds operate reactively post-inflow, failing to reserve surge buffer capacity before storms hit.
+## Sime Darby Property and Malaysian setting
 
-BlueLoop transforms passive detention basins into proactive, autonomous water networks executing a real-time event-driven loop:
-$$\mathbf{SENSE} \longrightarrow \mathbf{PREDICT} \longrightarrow \mathbf{ACT} \longrightarrow \mathbf{MEASURE}$$
+The concept is framed for the [Sime Darby Property University Hackathon](https://www.simedarbyproperty.com/universityhackathon/) **Planet** theme, particularly water conservation, circular reuse, and climate resilience. Its intended demonstration users are township operations and landscape teams, with potential value for residents and nearby businesses.
 
----
+**Elmina Central Park, City of Elmina, Shah Alam, Selangor** is the single reference setting. Sime Darby Property describes a [300-acre Central Park](https://www.simedarbyproperty.com/city-of-elmina/) in the township. The proposed demo use case reuses retained stormwater for park landscaping while creating pre-storm pond headroom.
 
-## ⚡ Core Features & Innovations
+This public asset description provides context. The DEMO-01 pond, reuse tank, valves, dimensions, and operational values are invented mock infrastructure. Regional December 2021 rainfall for Elmina coordinates in Selangor drives the replay; it is not park telemetry. Dates use MYT, money uses RM, and volumes use m³. Source links appear in **Data sources**, and JSON exports include the Elmina context.
 
-### 1. Multi-Vector Hydrological Telemetry (`SENSE`)
-- **Pond Level Sensor (`Node P-01`):** Real-time percentage tracking of central retention wetland capacity.
-- **Irrigation Storage Level (`Cistern T-01`):** Subterranean cistern buffer monitoring.
-- **Soil Moisture Sensor Network (`Sensor S-04`):** Real-time landscape turf saturation across township green zones.
-- **Civil Canal Headroom:** Downstream regional canal capacity index.
+See [the presentation walkthrough](docs/hackathon-demo.md) for a short, locally grounded demo script.
 
-### 2. Predictive Storm Runoff & Risk Assessment (`PREDICT`)
-- Ingests meteorological radar and forecast horizon vectors ($T + 2\text{h}$ to $T + 12\text{h}$).
-- Evaluates the **Hydraulic Headroom Equation**:
-  $$V_{\text{peak}} = V_{\text{current}} + (A_{\text{catchment}} \times P_{\text{forecast}} \times C_{\text{runoff}}) - Q_{\text{passive\_out}}$$
-- Forecasts catastrophic breaches ($> 100\%$ capacity) hours before storm landfall.
+## Run locally
 
-### 3. Smart Tiered Drawdown Protocol (`ACT`)
-- **Tier 1 (Internal Non-Potable Reuse - Default):** Activates transfer pumps ($380\text{ m}^3/\text{h}$) to draw retention pond levels down from $78\% \rightarrow 55\%$, routing harvested stormwater into storage cisterns ($32\% \rightarrow 75\%$) and irrigating parched green fields ($38\% \rightarrow 62\%$).
-- **Tier 2 (Controlled Downstream Canal Pre-Release):** If storage buffers and landscape turf are saturated, BlueLoop initiates a controlled low-flow staged release ($15\%$) into empty regional civil canals 6–10 hours *before* the storm.
-- **Tier 3 (Emergency Retention):** Closes external sluice gates during peak storm hours to protect downstream residential communities.
+Use Node.js 20+ (verified with Node 24).
 
-### 4. Human-in-the-Loop & Supervised Autonomy
-- **Supervised Mode (Default):** Interactive operator dispatch with a single-click authorization card (`[APPROVE DRAWDOWN]`).
-- **Autonomous Mode (Fail-Safe):** Automated trigger if high-risk alerts remain unacknowledged within 60 minutes of the storm event horizon.
-
-### 5. ESG Accounting & Impact Ledger (`MEASURE`)
-- **Runoff Volume Retained:** $+1,150\text{ m}^3$ surge buffer created ($5,270\text{ m}^3$ total captured).
-- **Water Bill Saved:** $\text{RM } 16,970$ monthly utility offset ($\text{RM } 2.28/\text{m}^3$ Air Selangor commercial tariff).
-- **Flood Risk Index:** Mitigated from $\mathbf{85\%} \rightarrow \mathbf{22\%}$ ($23\%$ peak surge reduction).
-
----
-
-## 🛠️ Tech Stack & Architecture
-- **Framework:** Next.js 14 (App Router) + React 18 + TypeScript
-- **Styling:** Tailwind CSS + Custom Industrial Midnight Design System (`#0B0F19` canvas, `#131B2E` cards)
-- **Data Visualization:** Recharts `<AreaChart>` with custom dual-curve hydrograph simulation and glassmorphic tooltip
-- **Icons & Telemetry:** Lucide React (`Droplets`, `Waves`, `CloudRain`, `ShieldCheck`, `Sliders`, `Sparkles`)
-- **Interactive SVG:** Vector hydraulic topology schematic with dynamic liquid wave levels and animated pipe flow dashes
-
----
-
-## 🚀 Getting Started
-
-### Prerequisites
-- Node.js 18+ (tested on Node.js v22.12.0)
-- npm 9+
-
-### Installation & Local Run
-```bash
-# Clone the repository
-git clone https://github.com/PinkKaito/BlueLoop.git
-cd BlueLoop
-
-# Install dependencies
-npm install
-
-# Start the development server
+```powershell
+npm ci
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) in your browser to explore the dashboard.
+Open http://localhost:3000. For a production build, stop the development server first, then run:
 
----
+```powershell
+npm run build
+npm start
+```
 
-## 🏆 Hackathon Demonstration Guide (For Judges)
-1. **Phase 1 (Baseline Stability):** Pond at $78\%$, Tank at $32\%$, Soil at $38\%$. Status is `STANDBY // POND HIGH`.
-2. **Phase 2 (Pre-Storm Alert):** Select between `45mm Moderate`, `85mm Heavy [Default]`, or `120mm Extreme Surge` using the interactive scenario pills or intensity slider. Notice the red curve spiking over the $100\%$ danger threshold to $105\%$.
-3. **Phase 3 (Approve Drawdown):** Click the glowing emerald **`APPROVE DRAWDOWN`** button. Watch the SVG pipelines animate water transfer, the gauges drop the pond to $55\%$ while filling the tank to $75\%$ and irrigating turf to $62\%$.
-4. **Phase 4 (Outcome Verification):** The hydrograph updates to show peak surge capped at $82\%$, flood risk mitigated by $23\%$, $+1,150\text{ m}^3$ buffer created, and $\text{RM } 16,970$ saved.
+## Demonstration controls
 
----
+- **Guided demo** starts a fresh 65 mm storm with automatic approval and staged canal release enabled at 1,800×. An 18-hour cycle takes about 36 seconds in the foreground.
+- **Five condition shortcuts** load fresh, independently computed scenarios: baseline, pre-storm alert, internal reuse, saturated-storage canal release, and post-storm results. They reset the previous run.
+- **Play / pause**, **15-minute step**, **reset**, and **1× / 60× / 360× / 1,800× / 7,200×** playback apply to both scripted and public-data replay. 1× is actual wall-clock speed; 7,200× advances two simulated hours per second.
+- **Weather scenarios** include clear weather, 35 mm moderate rain, 65 mm monsoon rain, 120 mm extreme surge, and saturated storage. Extreme storms can overflow, including with mitigation active.
+- **Approve drawdown** enables reuse; actual volume changes as simulated time advances. Automatic approval triggers above 85% projected storage.
+- **Allow staged canal release** enables a bypass while pond storage is above its target. It requires drawdown approval, available downstream headroom, and no heavy rain. Heavy rain (≥5 mm/h), headroom below 30%, sensor loss, actuator failure, and emergency stop prevent external release.
+- **Fault injection** demonstrates sensor loss, actuator failure, and downstream blockage. A blocked canal still permits internal reuse. An emergency stop clears approval and automatic mode; release the hold and approve again to restart controlled flows.
+- **Elmina Central Park** is the fixed reference setting for every scenario, weather request, and export. All five operating conditions use the same illustrative Elmina model.
+- **Telemetry & events** shows sampled model readings, the water-balance ledger, and audit events. Export telemetry CSV, events CSV, or a full JSON run with provenance and model assumptions.
+
+The current run and event ledger are saved in browser local storage, at most once per second during playback, and restored paused. The telemetry trace collects up to 2,000 samples during the current page visit. Playback pauses when the tab is hidden. Reset invalidates any pending dataset request.
+
+## Real public weather data
+
+**Data sources → Load offline Dec 2021 replay** loads 72 bundled hourly ERA5 precipitation totals for Elmina's requested coordinates. No network request is needed at presentation time. These records were fetched from Open-Meteo, with the provider request URL, retrieval time, attribution, and resolved grid coordinates recorded in `public/data/elmina-dec2021.json`.
+
+| Source | Data available | How BlueLoop uses it |
+| --- | --- | --- |
+| [Open-Meteo historical API](https://open-meteo.com/en/docs/historical-weather-api) | Global hourly reanalysis precipitation | Bundled December 17–19, 2021 provider records and custom 1–7 day historical fetches |
+| [Open-Meteo forecast API](https://open-meteo.com/en/docs) | Hourly forecast precipitation | On-demand latest 72-hour forecast, replayed as a simulation |
+| [JPS Public Infobanjir](https://publicinfobanjir.water.gov.my/laporan-harian/?lang=en) | Official Malaysian station rainfall/water-level reports; CSV export | Research/reference link; no scraping or unverified API integration |
+| [MET Malaysia / data.gov.my](https://developer.data.gov.my/realtime-api/weather) | General forecasts and weather warnings | Research/reference link; not used as quantitative hourly rainfall |
+
+**Attribution:** Weather data by [Open-Meteo.com](https://open-meteo.com/), historical data derived from ERA5, under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/). Rainfall amounts are unscaled. The provider reports accumulated rainfall at each hour's end; BlueLoop shifts timestamps back one hour to label interval starts. Consequently, the bundled replay spans December 16 at 23:00 through December 19 at 23:00 MYT. ERA5 grid cells are regional: the returned coordinates are not pond sensor locations. Open-Meteo's free API is for non-commercial use; check its terms before commercial deployment.
+
+Refresh the bundled data deliberately with `npm run data:refresh`. The existing Elmina fixture already works offline.
+
+**Fetch latest forecast** and **Fetch historical rainfall** use the server-side `/api/weather` endpoint. The provider hosts and site coordinates are fixed, historical intervals are limited to seven days, and requests time out after 12 seconds. Provider errors appear in the dashboard while preserving the current run. Forecast requests are cached for 15 minutes; historical requests for 24 hours. The live forecast is fetched on demand, not automatically polled or represented as live sensor observations.
+
+## Import rainfall CSV
+
+Use **Download template** in Data sources. Files must be under 250 KB with 2–168 consecutive hourly interval-start records and explicit timezone offsets:
+
+```csv
+timestamp,rain_mm
+2021-12-17T00:00:00+08:00,0
+2021-12-17T01:00:00+08:00,1.2
+2021-12-17T02:00:00+08:00,5.6
+```
+
+Missing, non-numeric, negative, excessive (>500 mm/h), duplicate, or irregular rainfall records are rejected. Standard quoting on the two required columns is accepted, so exported rainfall can be imported again. Convert station water-level readings separately: rainfall and water level use different units and are not interchangeable.
+
+## Model and limits
+
+All hydraulic readings and commands are simulated. There are no physical sensor, PLC, pump, or valve connections, no operator authentication, and no shared server-side operational database. This is a functional demonstration, not a commissioned flood-control system.
+
+The model advances on at most one-minute integration intervals. Runoff is `rain_mm / 1000 × catchment_area_m² × runoff_coefficient`. Internal transfer removes exactly the volume added to the tank; irrigation and external discharge remove metered volumes. Pond and tank bounds are enforced, with excess pond volume explicitly recorded as overflow.
+
+The conservation identity is:
+
+`initial pond + initial tank + runoff = current pond + current tank + irrigation + passive discharge + canal release + overflow`
+
+Benefits are derived from these quantities. **Water reused** is actual modeled irrigation delivery. **Water bill avoided** is that volume multiplied by the configurable illustrative tariff (default RM 3.20/m³). Canal release earns no water-bill credit. The tariff is an assumption, not a claim about the current utility schedule. The storage risk index is a bounded heuristic, not flood probability or a calibrated hydrological risk assessment. Soil moisture is an illustrative index; downstream headroom is also modeled.
+
+Forecasts rerun the same model, proposing approval now when it has not yet been granted. Lines above 100% show excess storage demand, while actual vessel levels remain bounded. The unmanaged comparator follows the same rainfall and passive drainage without active controls. The five prototype headings are preserved; numerical results are computed instead of reproducing its inconsistent fixed volume/percentage pairs.
+
+Site capacities, catchment areas, coefficients, and flow rates in `src/lib/simulation.ts` are explicit demonstration assumptions. Before physical integration, survey and calibrate them, define actual device protocols, and add authenticated commands, durable server-side auditing, and independently validated hydraulic safety logic.
+
+## Verification
+
+```powershell
+npm test
+npm run lint
+npm run typecheck
+npm run build
+```
+
+Tests cover conservation and bounds for every Elmina scenario, the bundled historical replay, supervised approval, heavy-rain gate closure, downstream blockage, sensor/actuator faults, emergency hold, playback-speed consistency, forecast isolation, saved-state validation, CSV round trips, invalid records, and weather endpoint validation/failure handling. Datasets and saved sessions for unsupported townships are rejected.
+
+Design context is documented in `PRODUCT.md` and `DESIGN.md`. The detailed model contract is in `blueloop_specification.md`.
 
 ## 👥 Team & Task Distribution
 
 | **Kyzer Phneh**<br>*(Lead Systems & Functional Build)* | **Lau Jun Hao**<br>*(UI/UX Design & High-Fi Assets)* | **Yap Han Lim**<br>*(Pitch Lead, Deck & Storytelling)* |
 | :--- | :--- | :--- |
 | • Next.js + Tailwind environment setup<br>• State machine & simulation logic<br>• Interactive chart & dynamic demo curves<br>• Live demo stability & production deployment | • High-fidelity UI layout & aesthetics via AI tools<br>• Township hydraulic topology vector graphic<br>• Static mockups of "future" vision & states<br>• Frontend styling & Tailwind component system | • 10-slide hackathon pitch deck formulation<br>• Financial ROI & ESG impact model (RM & $m^3$)<br>• 5-minute pitch script & judge Q&A preparation<br>• Live demo narration & driver during presentation |
-

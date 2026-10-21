@@ -2,9 +2,9 @@ import type { Metadata } from 'next';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: 'BlueLoop — Smart Township Water Intelligence | Sime Darby Property',
+  title: 'BlueLoop | Sime Darby Property Hackathon Demo',
   description:
-    'Autonomous predictive stormwater retention and non-potable irrigation reuse system for master-planned townships (City of Elmina & Bandar Bukit Raja). Track: PLANET.',
+    'Mock township stormwater and park irrigation demonstration inspired by Elmina Central Park, City of Elmina, Selangor, Malaysia. Planet theme: water conservation and climate resilience.',
 };
 
 export default function RootLayout({
@@ -13,7 +13,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className="dark">
+    <html lang="en">
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
@@ -22,7 +22,7 @@ export default function RootLayout({
           rel="stylesheet"
         />
       </head>
-      <body className="min-h-screen bg-[#0B0F19] text-[#F8FAFC] antialiased select-none font-sans">
+      <body>
         {children}
       </body>
     </html>
