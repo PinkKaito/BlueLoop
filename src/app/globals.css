@@ -10,6 +10,9 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.scene-weather { display: inline-flex; align-items: center; gap: 7px; white-space: nowrap; font-size: 12px; }
+.scene-weather > span { color: var(--sage-11); }
 :root {
   color-scheme: light;
   --ground: var(--sage-3);

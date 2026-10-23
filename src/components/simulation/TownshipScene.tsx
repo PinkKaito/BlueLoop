@@ -29,9 +29,20 @@ import {
 } from '@react-three/drei';
 import { OrbitControls as OrbitControlsImpl } from 'three-stdlib';
 import * as THREE from 'three';
-import { Eye, Focus, Layers3, Maximize2, RotateCcw, X } from 'lucide-react';
+import {
+  CloudRain,
+  Eye,
+  Focus,
+  Layers3,
+  Maximize2,
+  RotateCcw,
+  Sun,
+  X,
+} from 'lucide-react';
 import { canalHeadroom, percent } from '@/lib/simulation';
+import { sceneWeather } from '@/lib/weather';
 import { number, useBlueLoop } from '@/components/workspace/BlueLoopProvider';
+import { WeatherEffects } from './WeatherEffects';
 
 export type AssetId = 'pond' | 'tank' | 'pump' | 'canal' | 'irrigation';
 type ViewId = 'site' | AssetId;
@@ -93,7 +104,7 @@ function surfaceMaterial(
     normalScale: new THREE.Vector2(0.6, 0.6),
   });
 }
-function useSurfaces() {
+function useSurfaces(wetness: number) {
   const t = useTexture([
     '/scene/grass_ground-diff.jpg',
     '/scene/grass_ground-normal.jpg',
@@ -107,6 +118,15 @@ function useSurfaces() {
     grass.color.set(radixGrass.grass8);
     return { grass, concrete: surfaceMaterial(t[3], t[4], t[5], 2) };
   }, [t]);
+  materials.grass.color
+    .set(radixGrass.grass8)
+    .lerp(new THREE.Color(radixGrass.grass11), wetness * 0.48);
+  materials.grass.roughness = 0.95 - wetness * 0.24;
+  materials.concrete.color
+    .set(radixSage.sage1)
+    .lerp(new THREE.Color(radixSage.sage9), wetness * 0.5);
+  materials.concrete.roughness = 0.95 - wetness * 0.67;
+  materials.concrete.envMapIntensity = 0.65 + wetness * 0.55;
   useEffect(
     () => () =>
       Object.values(materials).forEach((m) => {
@@ -213,7 +233,13 @@ function Cylinder({
     </mesh>
   );
 }
-const Landscape = memo(function Landscape() {
+const Landscape = memo(function Landscape({
+  intensity,
+  animate,
+}: {
+  intensity: number;
+  animate: boolean;
+}) {
   const tree = useGLTF('/scene/tree.glb');
   const shrub = useGLTF('/scene/shrub.glb');
   const [shrubAlpha] = useTexture(['/scene/shrub-alpha.png']);
@@ -281,11 +307,29 @@ const Landscape = memo(function Landscape() {
         }))
       );
   }, [tree.scene, shrub.scene, shrubAlpha]);
+  const groups = useRef<(THREE.Group | null)[]>([]);
+  const elapsed = useRef(0);
+  const { invalidate } = useThree();
+  useFrame((_, delta) => {
+    if (!animate || intensity === 0) return;
+    elapsed.current += Math.min(delta, 0.05);
+    groups.current.forEach((group, i) => {
+      if (!group) return;
+      group.rotation.z =
+        (Math.sin(elapsed.current * 1.6 + i * 0.8) * 0.008 + 0.009) * intensity;
+      group.rotation.x =
+        Math.sin(elapsed.current * 1.1 + i) * 0.006 * intensity;
+    });
+    invalidate();
+  });
   return (
     <group>
       {instances.map((p, i) => (
         <group
           key={i}
+          ref={(group) => {
+            groups.current[i] = group;
+          }}
           position={[p.x, 0.72, p.z]}
           rotation={[0, p.rotation, 0]}
         >
@@ -411,15 +455,7 @@ function Ground({
     </group>
   );
 }
-function Pond({
-  ratio,
-  onSelect,
-  animate,
-}: {
-  ratio: number;
-  onSelect: () => void;
-  animate: boolean;
-}) {
+function useWaterNormal(animate: boolean, rain: number, flow = false) {
   const normal = useTexture('/scene/water-normal.jpg');
   const texture = useMemo(() => {
     const t = normal.clone();
@@ -428,27 +464,61 @@ function Pond({
     return t;
   }, [normal]);
   useEffect(() => () => texture.dispose(), [texture]);
-  const water = useRef<THREE.Mesh>(null);
   const { invalidate } = useThree();
   useFrame((_, delta) => {
     if (animate) {
-      texture.offset.x += delta * 0.008;
-      texture.offset.y += delta * 0.004;
+      texture.offset.x += Math.min(delta, 0.05) * (0.008 + rain * 0.014);
+      texture.offset.y +=
+        Math.min(delta, 0.05) * (0.004 + rain * 0.009 + (flow ? 0.04 : 0));
       invalidate();
     }
-    if (water.current)
-      water.current.position.y = THREE.MathUtils.damp(
-        water.current.position.y,
-        -1.5 + ratio * 2,
-        4,
-        delta
-      );
   });
+  return texture;
+}
+function CanalWater({
+  animate,
+  rain,
+  flow,
+}: {
+  animate: boolean;
+  rain: number;
+  flow: boolean;
+}) {
+  const normal = useWaterNormal(animate, rain, flow);
+  return (
+    <mesh
+      position={[20, 0.9, 19]}
+      rotation={[-Math.PI / 2, 0, 0]}
+      receiveShadow
+    >
+      <planeGeometry args={[5.9, 12]} />
+      <meshPhysicalMaterial
+        color={radixTeal.teal12}
+        roughness={0.16 + rain * 0.12}
+        metalness={0.3}
+        normalMap={normal}
+        normalScale={new THREE.Vector2(0.35 + rain * 0.5, 0.35 + rain * 0.5)}
+        clearcoat={1}
+      />
+    </mesh>
+  );
+}
+function Pond({
+  ratio,
+  onSelect,
+  animate,
+  rain,
+}: {
+  ratio: number;
+  onSelect: () => void;
+  animate: boolean;
+  rain: number;
+}) {
+  const texture = useWaterNormal(animate, rain);
   const geometry = useMemo(() => new THREE.ShapeGeometry(pondShape(0.91)), []);
   return (
     <group>
       <mesh
-        ref={water}
         geometry={geometry}
         rotation={[-Math.PI / 2, 0, 0]}
         position={[0, -1.5 + ratio * 2, 0]}
@@ -461,9 +531,11 @@ function Pond({
         <meshPhysicalMaterial
           color={radixTeal.teal12}
           metalness={0.25}
-          roughness={0.12}
+          roughness={0.12 + rain * 0.13}
           normalMap={texture}
-          normalScale={new THREE.Vector2(0.45, 0.45)}
+          normalScale={
+            new THREE.Vector2(0.45 + rain * 0.65, 0.45 + rain * 0.65)
+          }
           envMapIntensity={1.5}
           clearcoat={1}
           clearcoatRoughness={0.12}
@@ -593,6 +665,7 @@ function Infrastructure({
   canal,
   irrigation,
   animate,
+  rain,
   onSelect,
 }: {
   concrete: THREE.Material;
@@ -601,6 +674,7 @@ function Infrastructure({
   canal: boolean;
   irrigation: boolean;
   animate: boolean;
+  rain: number;
   onSelect: (id: AssetId) => void;
 }) {
   const pick = (id: AssetId) => (e: ThreeEvent<MouseEvent>) => {
@@ -763,14 +837,7 @@ function Infrastructure({
             material={concrete}
           />
         ))}
-        <mesh position={[20, 0.9, 19]} rotation={[-Math.PI / 2, 0, 0]}>
-          <planeGeometry args={[5.9, 12]} />
-          <meshPhysicalMaterial
-            color={radixTeal.teal12}
-            roughness={0.2}
-            metalness={0.3}
-          />
-        </mesh>
+        <CanalWater animate={animate} rain={rain} flow={canal} />
         {[18.4, 21.6].map((x) => (
           <Cylinder
             key={x}
@@ -893,16 +960,34 @@ function SceneContent({
   reduced: boolean;
   select: (id: AssetId) => void;
 }) {
-  const { s, site, playing, currentRain } = useBlueLoop();
-  const materials = useSurfaces();
+  const { s, site, playing, dataset } = useBlueLoop();
+  const weather = sceneWeather(dataset, s.hour);
+  const materials = useSurfaces(weather.wetness);
+  const { size } = useThree();
+  const aspect = size.width / Math.max(1, size.height);
+  const fit =
+    view === 'site' && aspect < 1.7 ? Math.min(1.55, 1.7 / aspect) : 1;
+  const fogOffset =
+    new THREE.Vector3(...targets.site.from).length() * (fit - 1);
+  const sky = new THREE.Color(radixSage.sage5).lerp(
+    new THREE.Color(radixSage.sage9),
+    weather.intensity * 0.65
+  );
   return (
     <>
-      <color attach="background" args={[radixSage.sage5]} />
-      <fog attach="fog" args={[radixSage.sage5, 105, 210]} />
-      <ambientLight intensity={0.25} />
+      <color attach="background" args={[sky]} />
+      <fog
+        attach="fog"
+        args={[
+          sky,
+          105 - weather.intensity * 20 + fogOffset,
+          210 - weather.intensity * 30 + fogOffset,
+        ]}
+      />
+      <ambientLight intensity={0.25 + weather.intensity * 0.35} />
       <directionalLight
         position={[-30, 55, 20]}
-        intensity={currentRain >= 5 ? 1.1 : 2.6}
+        intensity={2.6 - weather.intensity * 1.65}
         castShadow
         shadow-mapSize={[2048, 2048]}
         shadow-camera-left={-48}
@@ -912,14 +997,28 @@ function SceneContent({
         shadow-normalBias={0.08}
         shadow-bias={-0.0002}
       />
-      <Environment files="/scene/daylight.hdr" environmentIntensity={0.65} />
+      <Environment
+        files="/scene/daylight.hdr"
+        environmentIntensity={0.65 - weather.intensity * 0.2}
+      />
       <Ground {...materials} />
       <Pond
         ratio={s.pond / site.pondCapacity}
         onSelect={() => select('pond')}
         animate={playing && !reduced}
+        rain={weather.intensity}
       />
-      <Landscape />
+      <Landscape
+        intensity={reduced ? 0 : weather.intensity}
+        animate={playing && !reduced}
+      />
+      <WeatherEffects
+        intensity={weather.intensity}
+        wetness={weather.wetness}
+        pondHeight={-1.5 + (s.pond / site.pondCapacity) * 2}
+        animate={playing}
+        reduced={reduced}
+      />
       <Infrastructure
         concrete={materials.concrete}
         tankRatio={s.tank / site.tankCapacity}
@@ -928,6 +1027,7 @@ function SceneContent({
         irrigation={s.irrigationFlow > 0}
         animate={playing && !reduced}
         onSelect={select}
+        rain={weather.intensity}
       />
       {labels &&
         ASSETS.filter((asset) =>
@@ -1006,6 +1106,7 @@ export default function TownshipScene({
     [reduced, setReduced] = useState(false);
   const container = useRef<HTMLDivElement>(null);
   const { s, site, dataset } = useBlueLoop();
+  const weather = sceneWeather(dataset, s.hour);
   useEffect(() => {
     const media = matchMedia('(prefers-reduced-motion: reduce)');
     setReduced(media.matches);
@@ -1051,11 +1152,18 @@ export default function TownshipScene({
       ref={container}
     >
       <div className="scene-topline">
-        <span>
+        <span title="Illustrative site layout">
           <i className="live-dot" />
           Elmina 3D model
         </span>
-        <span className="scene-prototype">Illustrative layout</span>
+        <span
+          className="scene-weather"
+          aria-label={`Weather: ${weather.label}, ${number(weather.rate, 1)} millimetres per hour`}
+        >
+          {weather.rate > 0 ? <CloudRain size={14} /> : <Sun size={14} />}
+          {weather.label}
+          {weather.rate > 0 && <span>{number(weather.rate, 1)} mm/h</span>}
+        </span>
       </div>
       <div className="scene-canvas">
         <SceneBoundary key={epoch} retry={() => setEpoch((e) => e + 1)}>

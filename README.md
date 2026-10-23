@@ -12,7 +12,7 @@ This public asset description provides context. The DEMO-01 pond, reuse tank, va
 
 See [the presentation walkthrough](docs/hackathon-demo.md) for a short, locally grounded demo script.
 
-Watch the [silent application demo](docs/demo/BlueLoop-application-demo.mp4) (3:28), covering all six pages, five scenarios, 3D asset inspection, safety controls, results, exports, and rainfall imports.
+Watch the [silent application demo](docs/demo/BlueLoop-application-demo.mp4) (4:49), covering all six pages, five scenarios, light and heavy rain, wet surfaces, 3D asset inspection, safety controls, results, exports, and rainfall imports. [Chapter guide](docs/demo/README.md).
 
 ## Run locally
 
@@ -40,6 +40,8 @@ npm start
 - **Data sources**: rainfall replay, imports, evidence, assumptions, and asset credits.
 
 The shared session persists as you navigate. The 3D model uses local optimized vegetation, photographed PBR textures, daylight lighting, shadows, reflective water, and detailed infrastructure. Drag to orbit, scroll to zoom, and use the asset strip for close-ups. Camera reset, labels, and fullscreen controls are available. WebGL is required; asset readings and the simulation remain available if graphics cannot load. Scene sources and licenses are in [public/scene/CREDITS.md](public/scene/CREDITS.md).
+
+Rainfall drives animated rain streaks, pond and canal impact rings, stronger water ripples, wind movement in vegetation, overcast lighting, and distance haze. Wet ground and reflective path puddles build from elapsed rainfall and dry after the storm. The model header shows the current rate in mm/h. These are illustrative visual effects, not measured wind, visibility, surface wetness, or a separate weather model. Pause freezes motion; reduced-motion mode retains lighting and wet materials without animated rain or foliage.
 
 ## Demonstration controls
 

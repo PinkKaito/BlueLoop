@@ -24,7 +24,7 @@ React Three Fiber 8 / Drei 9 / Three.js r170. PBR grass and concrete, optimized 
 
 Drag to orbit, scroll or pinch to zoom, select geometry or the asset strip for a focused camera and current model readings. Camera reset, labels, and fullscreen are real controls. Main scene labels show three assets; focused views show one. Phone labels recede to preserve the landscape; the full asset strip stays accessible. Graphics errors retain the surrounding simulation and offer retry. WebGL is required for the model.
 
-Render on demand while paused, cap device pixel ratio at 1.5, and use simplified local meshes. Water ripple motion and moving flow markers run during playback. Reduced-motion mode removes those optional animations . Gate geometry reflects actual modeled release even when paused.
+Render on demand while paused, cap device pixel ratio at 1.5, and use simplified local meshes. Rain streaks and surface impact rings use two GPU-instanced draw calls with capped particle counts. Rain density, slant, water disturbance, foliage movement, lighting, and haze follow the simulation's current hourly rainfall. Pond and canal normals animate during playback, with faster canal motion during release. Wet materials and path puddles derive from elapsed rainfall with gradual drying; future rainfall cannot wet the scene early. These visual responses are illustrative, not calibrated environmental readings. Pause freezes motion; reduced-motion mode retains static materials and lighting without animated rain, water, foliage, or flow markers. Gate geometry reflects actual modeled release even when paused.
 
 ## Responsive behavior
 

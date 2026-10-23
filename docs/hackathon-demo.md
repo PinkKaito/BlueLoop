@@ -15,6 +15,10 @@ The single reference setting is [Elmina Central Park](https://www.simedarbyprope
 5. **Ground the evidence (30 seconds).** Open **Data sources** and load **Load Dec 2021 replay**. Show the 72 hourly records and source attribution. Rainfall comes from regional ERA5 reanalysis for Elmina coordinates in Selangor; all derived telemetry is simulated. The bundled rain totals 138.7 mm over the 72-hour interval. Do not describe these as park rain-gauge measurements.
 6. **Close on repeatability (20 seconds).** Explain that every scenario uses the same Elmina reference setting and that reset produces a fresh run. Export the run to retain assumptions, provenance, decisions, and the water balance. The hackathon deliverable is a self-contained, reproducible demonstration, with no connected devices.
 
+## Optional weather close-up
+
+In a scenario chapter, choose **Moderate rain, 35 mm** under **Weather scenario**. Play at 7,200× until hour 6, pause, then resume at 60× to inspect light rain. Choose **Extreme surge, 120 mm** to start a fresh run and advance to hours 8–9 for heavy rain. Select **Retention pond** or **Release gate** to inspect impacts and water movement. After hour 11, rain stops while paths remain wet and then dry. The model's weather header reports the actual current input rate. Pause freezes the scene; reduced-motion preferences suppress optional animation.
+
 ## Source and evidence boundaries
 
 - The official City of Elmina page supports the park reference, not the invented infrastructure dimensions or routing scheme.
