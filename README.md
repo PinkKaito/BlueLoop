@@ -14,6 +14,8 @@ See [the presentation walkthrough](docs/hackathon-demo.md) for a short, locally 
 
 Watch the [silent application demo](docs/demo/BlueLoop-application-demo.mp4) (4:49), covering all six pages, five scenarios, light and heavy rain, wet surfaces, 3D asset inspection, safety controls, results, exports, and rainfall imports. [Chapter guide](docs/demo/README.md).
 
+Explore the [mock dashboard UI on Google AI Studio](https://ais-pre-2xgyvtumt6pl5q3trc3q75-717004562667.asia-southeast1.run.app/).
+
 ## Run locally
 
 Use Node.js 20+ (verified with Node 24).
