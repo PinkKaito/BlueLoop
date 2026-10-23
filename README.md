@@ -12,6 +12,8 @@ This public asset description provides context. The DEMO-01 pond, reuse tank, va
 
 See [the presentation walkthrough](docs/hackathon-demo.md) for a short, locally grounded demo script.
 
+Watch the [silent application demo](docs/demo/BlueLoop-application-demo.mp4) (3:28), covering all six pages, five scenarios, 3D asset inspection, safety controls, results, exports, and rainfall imports.
+
 ## Run locally
 
 Use Node.js 20+ (verified with Node 24).
