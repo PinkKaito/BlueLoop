@@ -1,6 +1,6 @@
 # BlueLoop · Township Water Intelligence
 
-A working demonstration of the supplied five-condition BlueLoop prototype, built with Next.js, React, TypeScript, and Recharts. The light dashboard models township stormwater storage, internal reuse, staged canal release, safety holds, and measured outcomes.
+A working demonstration of the supplied five-condition BlueLoop prototype, built with Next.js, React, TypeScript, Three.js, and Recharts. The multipage workspace models township stormwater storage, internal reuse, staged canal release, safety holds, and computed outcomes.
 
 ## Sime Darby Property and Malaysian setting
 
@@ -28,23 +28,34 @@ npm run build
 npm start
 ```
 
+## Workspace and 3D environment
+
+- **Overview**: current water headroom, rainfall, reuse, and the next decision.
+- **Scenario studio**: five dedicated chapters, each with an explicit **Load this preset** action.
+- **Water network**: an interactive Three.js landscape with selectable pond, tanks, pump station, canal gate, and irrigation.
+- **Impact & results**: computed delivery, illustrative RM savings, managed/unmanaged demand, and the water-balance ledger.
+- **Telemetry & events**: readings, audit events, severity filters, and exports.
+- **Data sources**: rainfall replay, imports, evidence, assumptions, and asset credits.
+
+The shared session persists as you navigate. The 3D model uses local optimized vegetation, photographed PBR textures, daylight lighting, shadows, reflective water, and detailed infrastructure. Drag to orbit, scroll to zoom, and use the asset strip for close-ups. Camera reset, labels, and fullscreen controls are available. WebGL is required; asset readings and the simulation remain available if graphics cannot load. Scene sources and licenses are in [public/scene/CREDITS.md](public/scene/CREDITS.md).
+
 ## Demonstration controls
 
 - **Guided demo** starts a fresh 65 mm storm with automatic approval and staged canal release enabled at 1,800×. An 18-hour cycle takes about 36 seconds in the foreground.
-- **Five condition shortcuts** load fresh, independently computed scenarios: baseline, pre-storm alert, internal reuse, saturated-storage canal release, and post-storm results. They reset the previous run.
+- **Load this preset** inside the five scenario chapters loads fresh, independently computed scenarios: baseline, pre-storm alert, internal reuse, saturated-storage canal release, and post-storm results. They reset the previous run.
 - **Play / pause**, **15-minute step**, **reset**, and **1× / 60× / 360× / 1,800× / 7,200×** playback apply to both scripted and public-data replay. 1× is actual wall-clock speed; 7,200× advances two simulated hours per second.
 - **Weather scenarios** include clear weather, 35 mm moderate rain, 65 mm monsoon rain, 120 mm extreme surge, and saturated storage. Extreme storms can overflow, including with mitigation active.
 - **Approve drawdown** enables reuse; actual volume changes as simulated time advances. Automatic approval triggers above 85% projected storage.
 - **Allow staged canal release** enables a bypass while pond storage is above its target. It requires drawdown approval, available downstream headroom, and no heavy rain. Heavy rain (≥5 mm/h), headroom below 30%, sensor loss, actuator failure, and emergency stop prevent external release.
 - **Fault injection** demonstrates sensor loss, actuator failure, and downstream blockage. A blocked canal still permits internal reuse. An emergency stop clears approval and automatic mode; release the hold and approve again to restart controlled flows.
 - **Elmina Central Park** is the fixed reference setting for every scenario, weather request, and export. All five operating conditions use the same illustrative Elmina model.
-- **Telemetry & events** shows sampled model readings, the water-balance ledger, and audit events. Export telemetry CSV, events CSV, or a full JSON run with provenance and model assumptions.
+- **Telemetry & events** shows sampled model readings and audit events. The water-balance ledger is on **Impact & results**. Export telemetry CSV, events CSV, or a full JSON run with provenance and model assumptions.
 
 The current run and event ledger are saved in browser local storage, at most once per second during playback, and restored paused. The telemetry trace collects up to 2,000 samples during the current page visit. Playback pauses when the tab is hidden. Reset invalidates any pending dataset request.
 
 ## Real public weather data
 
-**Data sources → Load offline Dec 2021 replay** loads 72 bundled hourly ERA5 precipitation totals for Elmina's requested coordinates. No network request is needed at presentation time. These records were fetched from Open-Meteo, with the provider request URL, retrieval time, attribution, and resolved grid coordinates recorded in `public/data/elmina-dec2021.json`.
+**Data sources → Load Dec 2021 replay** loads 72 bundled hourly ERA5 precipitation totals for Elmina's requested coordinates. No network request is needed at presentation time. These records were fetched from Open-Meteo, with the provider request URL, retrieval time, attribution, and resolved grid coordinates recorded in `public/data/elmina-dec2021.json`.
 
 | Source | Data available | How BlueLoop uses it |
 | --- | --- | --- |

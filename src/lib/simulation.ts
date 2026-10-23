@@ -22,10 +22,10 @@ export interface RainDataset {
 }
 export const SCENARIOS: Record<ScenarioId, { name: string; rain: number; pond: number; tank: number; soil: number }> = {
   normal: { name: 'Clear weather', rain: 0, pond: 50, tank: 60, soil: 55 },
-  moderate: { name: 'Moderate rain · 35 mm', rain: 35, pond: 70, tank: 40, soil: 45 },
-  heavy: { name: 'Monsoon storm · 65 mm', rain: 65, pond: 78, tank: 32, soil: 38 },
-  extreme: { name: 'Extreme surge · 120 mm', rain: 120, pond: 85, tank: 60, soil: 68 },
-  saturated: { name: 'Saturated storage · 65 mm', rain: 65, pond: 78, tank: 95, soil: 88 },
+  moderate: { name: 'Moderate rain, 35 mm', rain: 35, pond: 70, tank: 40, soil: 45 },
+  heavy: { name: 'Monsoon storm, 65 mm', rain: 65, pond: 78, tank: 32, soil: 38 },
+  extreme: { name: 'Extreme surge, 120 mm', rain: 120, pond: 85, tank: 60, soil: 68 },
+  saturated: { name: 'Saturated storage, 65 mm', rain: 65, pond: 78, tank: 95, soil: 88 },
 };
 export function syntheticDataset(scenario: ScenarioId, township: TownshipId): RainDataset {
   const distribution = [0, 0, 0, 0, 0, 0, 0.08, 0.22, 0.35, 0.25, 0.1, 0, 0, 0, 0, 0, 0, 0];

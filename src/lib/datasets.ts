@@ -17,7 +17,7 @@ export function normalizeWeather(raw: unknown, township: TownshipId, mode: 'hist
   // Replay and CSV inputs use interval starts, so shift labels back one hour.
   const points = body.hourly.time.map((time, i) => ({ time: new Date(Date.parse(`${time}:00+08:00`) - 3600000).toISOString(), rainMm: body.hourly!.precipitation![i] as number }));
   const dataset: RainDataset = { id: `open-meteo-${mode}-${township}-${String(body.hourly.time[0])}`,
-    name: mode === 'historical' ? `Historical rainfall · ${points[0].time.slice(0, 10)} to ${points.at(-1)!.time.slice(0, 10)}` : 'Latest 72-hour weather forecast',
+    name: mode === 'historical' ? `Historical rainfall, ${points[0].time.slice(0, 10)} to ${points.at(-1)!.time.slice(0, 10)}` : 'Latest 72-hour weather forecast',
     kind: mode, source: mode === 'historical' ? 'Open-Meteo / ERA5 reanalysis' : 'Open-Meteo forecast models',
     sourceUrl, license: 'CC BY 4.0', attribution: 'Weather data by Open-Meteo.com. Rainfall drives the BlueLoop hydraulic simulation; not observed township sensor data.',
     township, fetchedAt: new Date().toISOString(), points };

@@ -49,7 +49,7 @@ export function HydraulicPanel({ state: s, site, dataset, playing }: { state: Si
           <rect x="376" y="197" width="144" height="20" rx="4" className="svg-label" />
           <text x="448" y="211" textAnchor="middle" className="svg-small">{number(s.tank)} / {number(site.tankCapacity)} m³</text>
           <rect x="392" y="240" width="143" height="27" rx="5" className="svg-label" />
-          <text x="463" y="257" textAnchor="middle" className="svg-small" fill={canal ? 'var(--amber)' : 'var(--muted)'}>CANAL · {number(s.canalFlow)} m³/h</text>
+          <text x="463" y="257" textAnchor="middle" className="svg-small" fill={canal ? 'var(--amber)' : 'var(--muted)'}>CANAL, {number(s.canalFlow)} m³/h</text>
         </svg>
       </div>
       <div className="schematic-meta"><span>Transfer mode <strong>{s.emergencyStop ? 'Emergency hold' : active ? 'Internal reuse' : canal ? 'Canal bypass' : 'Standby'}</strong></span><span className={canalHeadroom(s, dataset) < 30 ? 'red' : 'blue'}>Canal headroom {canalHeadroom(s, dataset).toFixed(0)}%</span></div>
@@ -59,7 +59,7 @@ export function HydraulicPanel({ state: s, site, dataset, playing }: { state: Si
       <Gauge label="Irrigation tank" value={tank} color="var(--green)" sub={`${number(s.tank)} m³`} stale={stale} />
       <Gauge label="Soil moisture" value={s.soil} color={s.soil >= 80 ? 'var(--amber)' : 'var(--water)'} sub={s.soil >= 80 ? 'Irrigation held' : 'Reuse available'} stale={stale} />
     </div>
-    <div className="telemetry-note"><Droplets size={14} /><span>{stale ? 'Device loss injected. Controls held; model readings shown for diagnosis.' : 'Simulated telemetry · volumes follow a shared water balance'}</span></div>
+    <div className="telemetry-note"><Droplets size={14} /><span>{stale ? 'Device loss injected. Controls held; model readings shown for diagnosis.' : 'Simulated telemetry, volumes follow a shared water balance'}</span></div>
   </div>;
 }
 function Gauge({ label, value, color, sub, stale }: { label: string; value: number; color: string; sub: string; stale: boolean }) {
